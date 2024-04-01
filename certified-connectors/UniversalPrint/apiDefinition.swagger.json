@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "UP_Graph_Connector_Test",
+    "title": "Universal Print",
     "description": "The connector for Universal Print. Can submit and print files.",
     "version": "1.0"
   },
