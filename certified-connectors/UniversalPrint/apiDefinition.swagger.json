@@ -1,0 +1,515 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "UP_Graph_Connector_Test",
+    "description": "The connector for Universal Print. Can submit and print files.",
+    "version": "1.0"
+  },
+  "host": "canary.graph.microsoft.com",
+  "basePath": "/v1.0",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [],
+  "produces": [],
+  "paths": {
+    "/print/shares": {
+      "get": {
+        "responses": {
+          "200": {
+            "$ref": "#/responses/findTargetShareSuccessReponse"
+          }
+        },
+        "summary": "Find target printer",
+        "description": "Return the printer share id matching the input name.",
+        "operationId": "FindTargetPrinter",
+        "parameters": [
+          {
+            "name": "$filter",
+            "in": "query",
+            "type": "string",
+            "required": true,
+            "x-ms-visibility": "important",
+            "x-ms-summary": "Printer share name",
+            "description": "The name of the printer share to print to."
+          }
+        ]
+      }
+    },
+    "/print/shares/{shareId}/jobs": {
+      "post": {
+        "responses": {
+          "201": {
+            "$ref": "#/responses/createJobSuccessResponse"
+          }
+        },
+        "summary": "Create job",
+        "description": "Create a print job",
+        "operationId": "CreateJob",
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-ms-summary": "Printer share ID"
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "application/json",
+            "x-ms-visibility": "internal"
+          },
+          {
+            "name": "configuration",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "configuration": {
+                  "$ref": "#/definitions/printJobConfiguration"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/print/shares/{shareId}/jobs/{jobId}/documents/{docId}/createUploadSession": {
+      "post": {
+        "responses": {
+          "200": {
+            "$ref": "#/responses/createUploadSessionSuccessResponse"
+          }
+        },
+        "summary": "Create upload session",
+        "description": "Create file upload session",
+        "operationId": "CreateUploadSession",
+        "parameters": [
+          {
+            "name": "shareId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "docId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "application/json",
+            "x-ms-visibility": "internal"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "properties": {
+                  "$ref": "#/definitions/printDocumentUploadProperties"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/prepareFile": {
+      "post": {
+        "responses": {
+          "200": {
+            "$ref": "#/responses/prepareFileResponse"
+          }
+        },
+        "summary": "Prepare file",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "description": "Prepare file for upload",
+        "operationId": "PrepareFile",
+        "parameters": [
+          {
+            "name": "file",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            },
+            "description": "The content of the file"
+          }
+        ]
+      }
+    },
+    "/uploadSessions": {
+      "put": {
+        "responses": {
+          "201": {
+            "description": "default",
+            "schema": {}
+          }
+        },
+        "summary": "Upload file",
+        "description": "Upload file",
+        "operationId": "UploadFile",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "application/json",
+            "x-ms-visibility": "internal"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "The url to upload the file",
+                  "x-ms-summary": "Upload url",
+                  "x-ms-visibility": "important"
+                },
+                "contentRange": {
+                  "type": "string",
+                  "description": "The file segment range",
+                  "x-ms-summary": "File segment range",
+                  "x-ms-visibility": "important"
+                },
+                "file": {
+                  "type": "string",
+                  "description": "The file segment",
+                  "x-ms-summary": "File segment",
+                  "x-ms-visibility": "important"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/print/shares/{printerShareId}/jobs/{printJobId}/start": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {}
+          }
+        },
+        "summary": "Start job",
+        "description": "Start the print job at the printer",
+        "operationId": "StartJob",
+        "parameters": [
+          {
+            "name": "printerShareId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The unique identifier for the printer share",
+            "x-ms-summary": "Printer share ID"
+          },
+          {
+            "name": "printJobId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The unique identifier for the printer job",
+            "x-ms-summary": "Printer job ID"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "printerShare": {
+      "description": "A printer share object",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The printer share's unique id.",
+          "x-ms-summary": "Printer share ID",
+          "x-ms-visibility": "important"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The printer share's display name.",
+          "x-ms-summary": "Printer share display name",
+          "x-ms-visibility": "important"
+        }
+      }
+    },
+    "printJobConfiguration": {
+      "description": "A configuration for print settings",
+      "type": "object",
+      "properties": {
+        "copies": {
+          "type": "integer",
+          "description": "The number of copies that should be printed.",
+          "default": 1,
+          "x-ms-summary": "Copies",
+          "x-ms-visibility": "important"
+        },
+        "orientation": {
+          "type": "string",
+          "description": "The direction in which document is displayed.",
+          "enum": [
+            "landscape",
+            "portrait",
+            "reverseLandscape",
+            "reversePortrait"
+          ],
+          "x-ms-summary": "Orientation",
+          "x-ms-visibility": "important"
+        },
+        "colorMode": {
+          "type": "string",
+          "description": "The color configuration to print the job",
+          "enum": [
+            "color",
+            "blackAndWhite",
+            "grayscale",
+            "auto"
+          ],
+          "x-ms-summary": "Color",
+          "x-ms-visibility": "important"
+        },
+        "mediaSize": {
+          "type": "string",
+          "description": "The page size for the paper or other print media",
+          "x-ms-summary": "Paper Size",
+          "x-ms-visibility": "important"
+        },
+        "duplexMode": {
+          "type": "string",
+          "description": "The setting to print one-sided jobs or double-sided jobs.",
+          "enum": [
+            "oneSided",
+            "flipOnLongEdge",
+            "flipOnShortEdge"
+          ],
+          "x-ms-summary": "Print on Both Sides",
+          "x-ms-visibility": "important"
+        },
+        "pagesPerSheet": {
+          "type": "integer",
+          "description": "The number of input Pages to impose upon a single Impression",
+          "x-ms-summary": "Pages per Sheet",
+          "x-ms-visibility": "important"
+        },
+        "dpi": {
+          "type": "integer",
+          "description": "The resolution to use when printing the job.",
+          "x-ms-summary": "Resolution",
+          "x-ms-visibility": "advanced"
+        },
+        "quality": {
+          "type": "string",
+          "description": "The print quality to process a print job.",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "x-ms-summary": "Quality",
+          "x-ms-visibility": "advanced"
+        },
+        "mediaType": {
+          "type": "string",
+          "description": "The type of media to use",
+          "x-ms-summary": "Media Type"
+        },
+        "finishings": {
+          "type": "array",
+          "description": "The finishing processes to apply to the printed document",
+          "default": [
+            "none"
+          ],
+          "items": {
+            "type": "string",
+            "description": "the finishing processes of the print job.",
+            "enum": [
+              "none",
+              "punch",
+              "cover",
+              "bind",
+              "staple",
+              "stapleTopLeft",
+              "stapleBottomLeft",
+              "stapleTopRight",
+              "stapleBottomRight",
+              "stapleDualLeft",
+              "stapleDualTop",
+              "stapleDualRight",
+              "stapleDualBottom",
+              "saddleStitch",
+              "stitchEdge",
+              "stitchLeftEdge",
+              "stitchTopEdge",
+              "stitchRightEdge",
+              "stitchBottomEdge"
+            ]
+          },
+          "x-ms-summary": "Finishing",
+          "x-ms-visibility": "advanced"
+        }
+      }
+    },
+    "printDocumentUploadProperties": {
+      "description": "A set of properties for uploading document content",
+      "type": "object",
+      "properties": {
+        "contentType": {
+          "description": "The MIME type of the document being uploaded.",
+          "type": "string",
+          "x-ms-visibility": "important",
+          "x-ms-summary": "Document type"
+        },
+        "documentName": {
+          "description": "The name of document being uploaded",
+          "type": "string",
+          "x-ms-visibility": "important",
+          "x-ms-summary": "Document name"
+        },
+        "size": {
+          "description": "Size of document (in bytes)",
+          "type": "integer",
+          "x-ms-visibility": "important",
+          "x-ms-summary": "Document size"
+        }
+      }
+    },
+    "fileSegment": {
+      "description": "A file segment and its content range data",
+      "type": "object",
+      "properties": {
+        "ContentRange": {
+          "description": "The content range of this segment in the entire file.",
+          "type": "string",
+          "x-ms-visibility": "important",
+          "x-ms-summary": "File segment range"
+        },
+        "Content": {
+          "description": "The file segment content",
+          "type": "string",
+          "x-ms-visibility": "important",
+          "x-ms-summary": "File segment"
+        }
+      }
+    }
+  },
+  "parameters": {},
+  "responses": {
+    "findTargetShareSuccessReponse": {
+      "description": "Response for successfully getting printer shares",
+      "schema": {
+        "$ref": "#/definitions/printerShare"
+      }
+    },
+    "createJobSuccessResponse": {
+      "description": "Response for successful job creation",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "description": "The unique ID for the created job",
+            "x-ms-summary": "Job ID"
+          },
+          "documentId": {
+            "type": "string",
+            "description": "The ID for the document in the print job",
+            "x-ms-summary": "Document ID"
+          }
+        }
+      }
+    },
+    "createUploadSessionSuccessResponse": {
+      "description": "Response for successful upload session creation",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "uploadUrl": {
+            "type": "string",
+            "description": "Upload URL for the file content",
+            "x-ms-summary": "Upload URL"
+          }
+        }
+      }
+    },
+    "prepareFileResponse": {
+      "description": "Returns the file chunks prepared for upload",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "fileContentSize": {
+            "type": "integer",
+            "description": "The total file content size",
+            "x-ms-summary": "File size"
+          },
+          "fileSegments": {
+            "type": "array",
+            "description": "The file chunks and metadata for upload",
+            "items": {
+              "$ref": "#/definitions/fileSegment"
+            },
+            "x-ms-visibility": "important"
+          }
+        }
+      }
+    },
+    "parsePrintConfigResponse": {
+      "description": "Returns the print configuration in the input file",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "shareId": {
+            "type": "string",
+            "description": "The printer share Id",
+            "x-ms-summary": "Printer share Id",
+            "x-ms-visibility": "important"
+          },
+          "printConfig": {
+            "$ref": "#/definitions/printJobConfiguration"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "oauth2-auth": {
+      "type": "oauth2",
+      "flow": "accessCode",
+      "tokenUrl": "https://login.windows.net/common/oauth2/authorize",
+      "scopes": {},
+      "authorizationUrl": "https://login.microsoftonline.com/common/oauth2/authorize"
+    }
+  },
+  "security": [
+    {
+      "oauth2-auth": []
+    }
+  ],
+  "tags": []
+}
