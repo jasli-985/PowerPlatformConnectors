@@ -5,7 +5,7 @@
     "description": "The connector for Universal Print. Can submit and print files.",
     "version": "1.0"
   },
-  "host": "canary.graph.microsoft.com",
+  "host": "graph.microsoft.com",
   "basePath": "/v1.0",
   "schemes": [
     "https"

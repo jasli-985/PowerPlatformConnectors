@@ -5,13 +5,13 @@
         "type": "oauthSetting",
         "oAuthSettings": {
           "identityProvider": "aad",
-          "clientId": "e7a59ba0-89e9-4fc2-8000-4fe396196b75",
+          "clientId": "<<Place here your CliendId>>",
           "scopes": [],
           "redirectMode": "Global",
           "redirectUrl": "https://global.consent.azure-apim.net/redirect",
           "properties": {
             "IsFirstParty": "False",
-            "AzureActiveDirectoryResourceId": "https://canary.graph.microsoft.com",
+            "AzureActiveDirectoryResourceId": "https://graph.microsoft.com",
             "IsOnbehalfofLoginSupported": true
           },
           "customParameters": {
@@ -22,7 +22,7 @@
               "value": "common"
             },
             "resourceUri": {
-              "value": "https://canary.graph.microsoft.com"
+              "value": "https://graph.microsoft.com"
             },
             "enableOnbehalfOfLogin": {
               "value": "false"
@@ -44,14 +44,8 @@
       }
     },
     "iconBrandColor": "#007ee5",
-    "scriptOperations": [
-      "PrepareFile",
-      "UploadFile",
-      "FindTargetPrinter",
-      "CreateJob"
-    ],
     "capabilities": [],
     "policyTemplateInstances": [],
-    "publisher": "Jasmine Li"
+    "publisher": "Microsoft"
   }
 }
